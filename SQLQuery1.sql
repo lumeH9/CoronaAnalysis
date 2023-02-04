@@ -28,6 +28,31 @@ where continent is not null
 order by 1,2
 
 
+-- the worst covid infection to death ratio on a single day for each country, only choosing days when total_deaths > 100, so the
+-- maxDeathsPercent is more significant, so e.g. the following are removed: if total cases and deaths is only 1 then maxDeathsPercent is 100%
+-- yemen and france where the only countries that recorded a percentage above 20%, 29.2% and 23.8% respectively
+
+select location, max((total_deaths/total_cases)*100) as maxDeathsPercent
+from sqlTutorial..CovidDeaths
+where continent is not null and total_deaths > 100
+group by location
+order by 2 desc
+
+
+-- according to the documentation the variable age_65_older refers to percentage of the population that is 65+
+-- as expected in france, on average the maxDeathsPercent goes down significantly during the whole period
+
+select location, date, total_deaths, total_cases, max((total_deaths/total_cases)*100) as maxDeathsPercent
+from sqlTutorial..CovidDeaths
+where continent is not null and total_deaths > 100 and location = 'France'
+group by location, date, total_deaths, total_cases
+order by 5 desc
+
+
+
+
+
+
 -- very rough estimate of your chances of dying if you got covid during different times
 
 select location, date, total_cases, total_deaths, (total_deaths/total_cases)*100 as deathsPercent
